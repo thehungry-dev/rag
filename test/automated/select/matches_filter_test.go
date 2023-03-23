@@ -1,51 +1,44 @@
-package filter_test
+package rag_test
 
 import (
 	"testing"
 
-	ctrls "github.com/thehungry-dev/rag/ctrls/tag/filter"
+	"github.com/thehungry-dev/rag/pkg/ctrls"
 )
 
-func TestTagFilterMatchesSelect(t *testing.T) {
-	t.Run("Tag", func(t *testing.T) {
-		t.Run("Filter", func(t *testing.T) {
-			t.Run("Select", func(t *testing.T) {
-				tagFilter := ctrls.TagFilterExample()
+func TestTagFilterSelect(t *testing.T) {
+	t.Parallel()
+	tagFilter := ctrls.TagFilterExample()
 
-				t.Run("Matches filter", func(t *testing.T) {
-					t.Run("No excluded tags", func(t *testing.T) {
-						tags := ctrls.TagsMatchingExample()
+	t.Run("Selects no excluded tags", func(t *testing.T) {
+		tags := ctrls.TagsMatchingExample()
 
-						selected := tagFilter.Select(tags)
+		selected := tagFilter.Select(tags)
 
-						t.Run("Selected", func(t *testing.T) {
-							Assert(t, selected)
-						})
-					})
+		if !selected {
+			t.Error()
+		}
 
-					t.Run("Excluded tags", func(t *testing.T) {
-						tags := ctrls.TagsExcludedMatchingExample()
+	})
 
-						rejected := tagFilter.Reject(tags)
+	t.Run("Rejects excluded tags", func(t *testing.T) {
+		tags := ctrls.TagsExcludedMatchingExample()
 
-						t.Run("Rejected", func(t *testing.T) {
-							Assert(t, rejected)
-						})
-					})
+		rejected := tagFilter.Reject(tags)
 
-					t.Run("Required and excluded tags", func(t *testing.T) {
-						tagFilter = ctrls.TagFilterRequiredExample()
+		if !rejected {
+			t.Error()
+		}
+	})
 
-						tags := ctrls.TagsMatchingExample()
+	t.Run("Selects required and excluded tags", func(t *testing.T) {
+		tagFilter = ctrls.TagFilterRequiredExample()
+		tags := ctrls.TagsMatchingExample()
 
-						selected := tagFilter.Select(tags)
+		selected := tagFilter.Select(tags)
 
-						t.Run("Selected", func(t *testing.T) {
-							Assert(t, selected)
-						})
-					})
-				})
-			})
-		})
+		if !selected {
+			t.Error()
+		}
 	})
 }

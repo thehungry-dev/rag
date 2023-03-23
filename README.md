@@ -1,3 +1,3 @@
 # Rag
 
-Provides a tag filtering language to filter tagged data.
+Provides a tag filtering language to filter tagged text.

@@ -1,24 +1,24 @@
-package tag
+package set
 
-type Nothing struct{}
-type Set map[string]Nothing
+type nothing struct{}
+type Set map[string]nothing
 
 func BuildSet(tags []string) Set {
-	set := make(map[string]Nothing, len(tags))
+	set := make(map[string]nothing, len(tags))
 
 	for _, tag := range tags {
-		set[tag] = Nothing{}
+		set[tag] = nothing{}
 	}
 
 	return set
 }
 
 func BuildSetOfSize(size int) Set {
-	return make(map[string]Nothing, size)
+	return make(map[string]nothing, size)
 }
 
 func (set Set) Add(tag string) {
-	set[tag] = Nothing{}
+	set[tag] = nothing{}
 }
 
 func (set Set) Include(tag string) bool {

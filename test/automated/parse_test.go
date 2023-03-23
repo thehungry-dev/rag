@@ -1,45 +1,46 @@
-package filter_test
+package rag_test
 
 import (
 	"testing"
 
-	ctrls "github.com/thehungry-dev/rag/ctrls/tag/filter"
-	"github.com/thehungry-dev/rag/tag/filter"
+	"github.com/thehungry-dev/rag"
+	"github.com/thehungry-dev/rag/pkg/ctrls"
 )
 
-func TestTagFilterParse(t *testing.T) {
-	t.Run("Tag", func(t *testing.T) {
-		t.Run("Filter", func(t *testing.T) {
-			t.Run("Parse", func(t *testing.T) {
-				tagFilterString := ctrls.StringExample()
+func TestParse(t *testing.T) {
+	t.Parallel()
+	tagFilterString := ctrls.StringExample()
 
-				t.Run("One of tags", func(t *testing.T) {
-					tagFilter := filter.Parse(tagFilterString)
-					oneOfTagName := ctrls.TagNameOneOfExample()
+	t.Run("One of tags included", func(t *testing.T) {
+		tagFilter := rag.Parse(tagFilterString)
+		oneOfTagName := ctrls.TagNameOneOfExample()
 
-					t.Run("Included", func(t *testing.T) {
-						Assert(t, tagFilter.IsRequiredOneOfTag(oneOfTagName))
-					})
-				})
+		included := tagFilter.IsRequiredOneOfTag(oneOfTagName)
 
-				t.Run("Required tags", func(t *testing.T) {
-					tagFilter := filter.Parse(tagFilterString)
-					requiredTagName := ctrls.TagNameRequiredExample()
+		if !included {
+			t.Error()
+		}
+	})
 
-					t.Run("Included", func(t *testing.T) {
-						Assert(t, tagFilter.IsRequiredTag(requiredTagName))
-					})
-				})
+	t.Run("Required tags included", func(t *testing.T) {
+		tagFilter := rag.Parse(tagFilterString)
+		requiredTagName := ctrls.TagNameRequiredExample()
 
-				t.Run("Excluded tags", func(t *testing.T) {
-					tagFilter := filter.Parse(tagFilterString)
-					excludedTagName := ctrls.TagNameExcludedExample()
+		included := tagFilter.IsRequiredTag(requiredTagName)
 
-					t.Run("Included", func(t *testing.T) {
-						Assert(t, tagFilter.IsExcludedTag(excludedTagName))
-					})
-				})
-			})
-		})
+		if !included {
+			t.Error()
+		}
+	})
+
+	t.Run("Excluded tags included", func(t *testing.T) {
+		tagFilter := rag.Parse(tagFilterString)
+		excludedTagName := ctrls.TagNameExcludedExample()
+
+		excluded := tagFilter.IsExcludedTag(excludedTagName)
+
+		if !excluded {
+			t.Error()
+		}
 	})
 }

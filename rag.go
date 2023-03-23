@@ -1,10 +1,10 @@
-// Package filter provides a data structure to filter data based on tags
-package filter
+// Package rag provides a tag filtering language for tagged text
+package rag
 
 import (
 	"strings"
 
-	"github.com/thehungry-dev/rag/tag"
+	"github.com/thehungry-dev/rag/internal/set"
 )
 
 const TagSeparator = ","
@@ -13,12 +13,12 @@ const TagExcludedToken = "-"
 const AllTagsKeyword = "_all"
 const UntaggedKeyword = "_untagged"
 
-var Nothing *TagFilter
+var FilterNothing *TagFilter
 
 type TagFilter struct {
-	requiredTags tag.Set
-	oneOfTags    tag.Set
-	excludedTags tag.Set
+	requiredTags set.Set
+	oneOfTags    set.Set
+	excludedTags set.Set
 	untagged     bool
 }
 
@@ -26,15 +26,15 @@ func Parse(filterText string) *TagFilter {
 	text := strings.TrimSpace(filterText)
 
 	if text == "" || text == AllTagsKeyword {
-		return Nothing
+		return FilterNothing
 	}
 
 	tags := strings.Split(text, TagSeparator)
 	maxTags := len(tags)
 
-	requiredTags := tag.BuildSetOfSize(maxTags)
-	oneOfTags := tag.BuildSetOfSize(maxTags)
-	excludedTags := tag.BuildSetOfSize(maxTags)
+	requiredTags := set.BuildSetOfSize(maxTags)
+	oneOfTags := set.BuildSetOfSize(maxTags)
+	excludedTags := set.BuildSetOfSize(maxTags)
 	filter := &TagFilter{requiredTags, oneOfTags, excludedTags, false}
 
 	for _, tag := range tags {
@@ -80,7 +80,7 @@ func (tagFilter *TagFilter) IsRequiredOneOfTag(tag string) bool {
 	return tagFilter.oneOfTags.Include(tag)
 }
 func (tagFilter *TagFilter) String() string {
-	if tagFilter == nil || tagFilter == Nothing {
+	if tagFilter == nil || tagFilter == FilterNothing {
 		return "_all"
 	}
 
@@ -109,7 +109,7 @@ func (tagFilter *TagFilter) IsUntaggedOnly() bool {
 }
 
 func (tagFilter *TagFilter) Select(tags []string) bool {
-	if tagFilter == nil || tagFilter == Nothing {
+	if tagFilter == nil || tagFilter == FilterNothing {
 		return true
 	}
 

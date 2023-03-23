@@ -1,10 +1,10 @@
-// Package filter provides controls for test environment
-package filter
+// Package ctrls provides building blocks to generate sample data for a test environment
+package ctrls
 
 import (
 	"fmt"
 
-	"github.com/thehungry-dev/rag/tag/filter"
+	"github.com/thehungry-dev/rag"
 )
 
 func TagNameOneOfExample() string    { return "aTag" }
@@ -32,12 +32,12 @@ func StringExcludedRequiredExample() string {
 	return fmt.Sprintf("%s,%s", RequiredTagExample(), ExcludeTagExample())
 }
 
-func TagFilterExample() *filter.TagFilter {
-	return filter.Parse(StringExample())
+func TagFilterExample() *rag.TagFilter {
+	return rag.Parse(StringExample())
 }
-func TagFilterRequiredExample() *filter.TagFilter {
-	return filter.Parse(StringExcludedRequiredExample())
+func TagFilterRequiredExample() *rag.TagFilter {
+	return rag.Parse(StringExcludedRequiredExample())
 }
-func TagFilterNothingExample() *filter.TagFilter {
-	return filter.Nothing
+func TagFilterNothingExample() *rag.TagFilter {
+	return rag.FilterNothing
 }
