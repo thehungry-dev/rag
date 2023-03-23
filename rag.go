@@ -13,6 +13,7 @@ const TagExcludedToken = "-"
 const AllTagsKeyword = "_all"
 const UntaggedKeyword = "_untagged"
 
+// Filter for which Select always returns true
 var FilterNothing *TagFilter
 
 type TagFilter struct {
@@ -22,6 +23,7 @@ type TagFilter struct {
 	untagged     bool
 }
 
+// Converts rag language into a filtering object
 func Parse(filterText string) *TagFilter {
 	text := strings.TrimSpace(filterText)
 
@@ -108,34 +110,34 @@ func (tagFilter *TagFilter) IsUntaggedOnly() bool {
 		tagFilter.untagged
 }
 
-func (tagFilter *TagFilter) Select(tags []string) bool {
+func (tagFilter *TagFilter) Select(inputTags []string) bool {
 	if tagFilter == nil || tagFilter == FilterNothing {
 		return true
 	}
 
-	if len(tags) == 0 {
+	if len(inputTags) == 0 {
 		return tagFilter.untagged
 	}
 
-	if !tagFilter.requiredTags.SubsetOf(tags) {
+	if !tagFilter.requiredTags.SubsetOf(inputTags) {
 		return false
 	}
 
-	if !tagFilter.excludedTags.IsEmpty() && tagFilter.excludedTags.IncludeAny(tags) {
+	if !tagFilter.excludedTags.IsEmpty() && tagFilter.excludedTags.IncludeAny(inputTags) {
 		return false
 	}
 
-	if !tagFilter.oneOfTags.IncludeAny(tags) {
+	if !tagFilter.oneOfTags.IncludeAny(inputTags) {
 		return false
 	}
 
-	if tagFilter.IsUntaggedOnly() && len(tags) > 0 {
+	if tagFilter.IsUntaggedOnly() && len(inputTags) > 0 {
 		return false
 	}
 
 	return true
 }
 
-func (tagFilter *TagFilter) Reject(tags []string) bool {
-	return !tagFilter.Select(tags)
+func (tagFilter *TagFilter) Reject(inputTags []string) bool {
+	return !tagFilter.Select(inputTags)
 }
