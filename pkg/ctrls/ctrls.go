@@ -11,23 +11,37 @@ func TagNameOneOfExample() string    { return "aTag" }
 func TagNameRequiredExample() string { return "requiredTag" }
 func TagNameExcludedExample() string { return "excludedTag" }
 
-func OneOfTagExample() string    { return TagNameOneOfExample() }
-func RequiredTagExample() string { return fmt.Sprintf("+%s", TagNameRequiredExample()) }
-func ExcludeTagExample() string  { return fmt.Sprintf("-%s", TagNameExcludedExample()) }
+// aTag
+func OneOfTagExample() string { return TagNameOneOfExample() }
 
+// +requiredTag
+func RequiredTagExample() string { return fmt.Sprintf("+%s", TagNameRequiredExample()) }
+
+// -excludedTag
+func ExcludeTagExample() string { return fmt.Sprintf("-%s", TagNameExcludedExample()) }
+
+// aTag,requiredTag
 func TagsMatchingExample() []string { return []string{TagNameOneOfExample(), TagNameRequiredExample()} }
+
+// aTag,requiredTag,excludedTag
 func TagsExcludedMatchingExample() []string {
 	return []string{TagNameOneOfExample(), TagNameRequiredExample(), TagNameExcludedExample()}
 }
 
+// aTag
 func TagsNonMatchingMissingRequiredExample() []string { return []string{TagNameOneOfExample()} }
+
+// requiredTag
 func TagsNonMatchingMissingAllRequiredOneOfExample() []string {
 	return []string{TagNameRequiredExample()}
 }
 
+// aTag,+requiredTag,-excludedTag
 func StringExample() string {
 	return fmt.Sprintf("%s,%s,%s", OneOfTagExample(), RequiredTagExample(), ExcludeTagExample())
 }
+
+// +requiredTag,-excludedTag
 func StringExcludedRequiredExample() string {
 	return fmt.Sprintf("%s,%s", RequiredTagExample(), ExcludeTagExample())
 }
